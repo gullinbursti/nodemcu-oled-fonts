@@ -1,8 +1,6 @@
 
-//#include <SPI.h>
-#include <Wire.h>
-//#include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <Wire.h>
 
 #include "Argon6pt7b.h"
 #include "ArgonExtended6pt7b.h"
@@ -49,6 +47,13 @@
 #define OLED_RESET     5
 #define SCREEN_ADDRESS 0x3C
 
+
+#define PREV_PIN D6
+#define NEXT_PIN D5
+
+bool prevBtnUp = true;
+bool nextBtnUp = true;
+
 byte btnPin = D5;
 bool btnUp = true;
 int fontInd = 0;
@@ -61,6 +66,12 @@ void setup() {
   Serial.begin(115200);
   pinMode(btnPin, INPUT_PULLUP);
   digitalWrite(btnPin, HIGH);
+
+  pinMode(PREV_PIN, INPUT_PULLUP);
+  digitalWrite(PREV_PIN, HIGH);
+
+  pinMode(NEXT_PIN, INPUT_PULLUP);
+  digitalWrite(NEXT_PIN, HIGH);
   
   Wire.begin(4, 0);
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
@@ -75,25 +86,61 @@ void setup() {
   }
 }
 
+
 void loop() {
-//  if (millis() % 1000 == 0) {
+  if (millis() % 1000 == 0) {
 //    Serial.println(digitalRead(btnPin));
-//  }
-  
-  if (digitalRead(btnPin) == LOW && btnUp) {
-    Serial.println("BUTTON DN");
+//    Serial.print(digitalRead(PREV_PIN));
+//    Serial.print(F(" -=- "));
+//    Serial.print(digitalRead(NEXT_PIN));
+//    Serial.println();
+  }
+
+  if (digitalRead(PREV_PIN) == LOW && prevBtnUp) {
+    Serial.println("PREV DN");
+    if (--fontInd < 0) {
+      fontInd = 15;
+    }
+    delay(100);
+    prevBtnUp = false;
+  }
+
+  if (digitalRead(PREV_PIN) == HIGH && !prevBtnUp) {
+    Serial.println("PREV UP");
+    showFont();
+    prevBtnUp = true;
+  }
+
+  if (digitalRead(NEXT_PIN) == LOW && nextBtnUp) {
+    Serial.println("NEXT DN");
     if (++fontInd > 15) {
       fontInd = 0;
     }
     delay(100);
-    btnUp = false;
+    nextBtnUp = false;
   }
 
-  if (digitalRead(btnPin) == HIGH && !btnUp) {
-    Serial.println("BUTTON UP");
+  if (digitalRead(NEXT_PIN) == HIGH && !nextBtnUp) {
+    Serial.println("NEXT UP");
     showFont();
-    btnUp = true;
+    nextBtnUp = true;
   }
+
+  
+//  if (digitalRead(btnPin) == LOW && btnUp) {
+//    Serial.println("BUTTON DN");
+//    if (++fontInd > 15) {
+//      fontInd = 0;
+//    }
+//    delay(100);
+//    btnUp = false;
+//  }
+//
+//  if (digitalRead(btnPin) == HIGH && !btnUp) {
+//    Serial.println("BUTTON UP");
+//    showFont();
+//    btnUp = true;
+//  }
 }
 
 
