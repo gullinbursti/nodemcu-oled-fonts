@@ -1,6 +1,5 @@
 
 #include <Adafruit_SSD1306.h>
-#include <Wire.h>
 
 #include "Argon6pt7b.h"
 #include "ArgonExtended6pt7b.h"
@@ -44,12 +43,12 @@
 #define SCREEN_HEIGHT 64
 //#define SCREEN_HEIGHT 32
 
-#define OLED_RESET     5
+#define OLED_RESET     -1
 #define SCREEN_ADDRESS 0x3C
 
 
 #define PREV_PIN D6
-#define NEXT_PIN D5
+#define NEXT_PIN D4
 
 bool prevBtnUp = true;
 bool nextBtnUp = true;
@@ -73,7 +72,6 @@ void setup() {
   pinMode(NEXT_PIN, INPUT_PULLUP);
   digitalWrite(NEXT_PIN, HIGH);
   
-  Wire.begin(4, 0);
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
   
@@ -101,14 +99,14 @@ void loop() {
     if (--fontInd < 0) {
       fontInd = 15;
     }
-    delay(100);
     prevBtnUp = false;
+    showFont();
   }
 
   if (digitalRead(PREV_PIN) == HIGH && !prevBtnUp) {
     Serial.println("PREV UP");
-    showFont();
     prevBtnUp = true;
+    delay(100);
   }
 
   if (digitalRead(NEXT_PIN) == LOW && nextBtnUp) {
@@ -116,14 +114,14 @@ void loop() {
     if (++fontInd > 15) {
       fontInd = 0;
     }
-    delay(100);
     nextBtnUp = false;
+    showFont();
   }
 
   if (digitalRead(NEXT_PIN) == HIGH && !nextBtnUp) {
     Serial.println("NEXT UP");
-    showFont();
     nextBtnUp = true;
+    delay(100);
   }
 
   
