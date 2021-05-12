@@ -38,14 +38,11 @@
 #include "VeraMono6pt7b.h"
 //#include ".h"
 
-
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
-//#define SCREEN_HEIGHT 32
 
-#define OLED_RESET     -1
+#define OLED_RESET -1
 #define SCREEN_ADDRESS 0x3C
-
 
 #define PREV_PIN D6
 #define NEXT_PIN D4
@@ -53,8 +50,6 @@
 bool prevBtnUp = true;
 bool nextBtnUp = true;
 
-byte btnPin = D5;
-bool btnUp = true;
 int fontInd = 0;
 
 
@@ -63,14 +58,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 void setup() {
   Serial.begin(115200);
-  pinMode(btnPin, INPUT_PULLUP);
-  digitalWrite(btnPin, HIGH);
-
-  pinMode(PREV_PIN, INPUT_PULLUP);
-  digitalWrite(PREV_PIN, HIGH);
-
-  pinMode(NEXT_PIN, INPUT_PULLUP);
-  digitalWrite(NEXT_PIN, HIGH);
+  pinMode(PREV_PIN, INPUT);
+  pinMode(NEXT_PIN, INPUT);
   
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
@@ -94,7 +83,7 @@ void loop() {
 //    Serial.println();
   }
 
-  if (digitalRead(PREV_PIN) == LOW && prevBtnUp) {
+  if (digitalRead(PREV_PIN) == HIGH && prevBtnUp) {
     Serial.println("PREV DN");
     if (--fontInd < 0) {
       fontInd = 15;
@@ -103,13 +92,13 @@ void loop() {
     showFont();
   }
 
-  if (digitalRead(PREV_PIN) == HIGH && !prevBtnUp) {
+  if (digitalRead(PREV_PIN) == LOW && !prevBtnUp) {
     Serial.println("PREV UP");
     prevBtnUp = true;
     delay(100);
   }
 
-  if (digitalRead(NEXT_PIN) == LOW && nextBtnUp) {
+  if (digitalRead(NEXT_PIN) == HIGH && nextBtnUp) {
     Serial.println("NEXT DN");
     if (++fontInd > 15) {
       fontInd = 0;
@@ -118,27 +107,11 @@ void loop() {
     showFont();
   }
 
-  if (digitalRead(NEXT_PIN) == HIGH && !nextBtnUp) {
+  if (digitalRead(NEXT_PIN) == LOW && !nextBtnUp) {
     Serial.println("NEXT UP");
     nextBtnUp = true;
     delay(100);
   }
-
-  
-//  if (digitalRead(btnPin) == LOW && btnUp) {
-//    Serial.println("BUTTON DN");
-//    if (++fontInd > 15) {
-//      fontInd = 0;
-//    }
-//    delay(100);
-//    btnUp = false;
-//  }
-//
-//  if (digitalRead(btnPin) == HIGH && !btnUp) {
-//    Serial.println("BUTTON UP");
-//    showFont();
-//    btnUp = true;
-//  }
 }
 
 
