@@ -44,7 +44,7 @@
 #define OLED_RESET -1
 #define SCREEN_ADDRESS 0x3C
 
-#define PREV_PIN D6
+#define PREV_PIN D3
 #define NEXT_PIN D4
 
 bool prevBtnUp = true;
